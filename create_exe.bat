@@ -1,4 +1,8 @@
 @echo off
+
+echo Installing project libs...
+pip install -r requirements.txt
+
 echo Installing pysimplegui-exemaker...
 pip install pysimplegui-exemaker
 

@@ -43,7 +43,7 @@ def get_product_card(
             },
             "filter": {
                 "withPhoto": 1,
-                "textSearch": article
+                "textSearch": str(article)
             }
         }
     }
@@ -82,7 +82,7 @@ def update_prices(api_key, excel_path):
     goods_data = []
     rows_to_delete = []
 
-    for row in sheet.iter_rows(min_row=2, max_col=2, values_only=True):
+    for row in sheet.iter_rows(min_row=2, max_col=0, values_only=True):
         article, price = row
         if article and price:
             product_data = get_product_card(api_key, article)
