@@ -84,7 +84,7 @@ def get_shop_warehouses(
     :param retries: Количество попыток при ошибках.
     :return: JSON с данными складов или None в случае неудачи.
     """
-    url = "https://marketplace-api.wildberries.ru/api/v3/offices"
+    url = "https://marketplace-api.wildberries.ru/api/v3/warehouses"
     headers = {
         'Authorization': api_key,
         'Content-Type': 'application/json'
