@@ -55,7 +55,7 @@ def remove_product_rest(
                     json=params,
                 )
 
-                if result.status_code != 204:
+                if result.status_code not in (204, 404):
                     errors = True
                     error_message = 'Некоторые товары не были удалены.'
 
@@ -104,3 +104,9 @@ def process_product_delete(event, file_path, shops: dict, window):
             text_color=BLACK_COLOR,
             button_color=BLUE_COLOR
         )
+
+    refresh_button = window.find_element('REFRESH' + shop_name)
+    delete_popup_button = window.find_element('DELETE_POPUP' + shop_name)
+
+    refresh_button.update(disabled=True)
+    delete_popup_button.update(disabled=True)
