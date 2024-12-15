@@ -80,7 +80,16 @@ def get_shop_frame(name: str) -> sg.Frame:
                 key=('ADD_FILE' + name)
             ),
             sg.Button(
-                'Обновить',
+                'Удалить товары',
+                button_color=BUTTON_COLOR,
+                mouseover_colors=LIGHT_BLUE_COLOR,
+                border_width=0,
+                disabled=True,
+                target=('DELETE_POPUP' + name),
+                key=('DELETE_POPUP' + name),
+            ),
+            sg.Button(
+                'Обновить цены',
                 button_color=BUTTON_COLOR,
                 mouseover_colors=LIGHT_BLUE_COLOR,
                 border_width=0,
