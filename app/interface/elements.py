@@ -10,13 +10,6 @@ from .colors import (
 
 from .images_base64 import MARKINES_IMAGE_BASE64
 
-TITLE_BAR = sg.Titlebar(
-    'Markines Repricer',
-    text_color=BLACK_COLOR,
-    background_color=BLUE_COLOR,
-    icon=None,
-)
-
 
 TOP_NAME = sg.Text(
     'REPRICER',
@@ -56,6 +49,7 @@ def get_window(
         layout,
         size=(800, 500),
         background_color=WHITE_COLOR,
+        finalize=True
     )
 
 

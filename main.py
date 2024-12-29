@@ -1,7 +1,6 @@
 import PySimpleGUI as sg
 
 from app.interface.elements import (
-    TITLE_BAR,
     TOP_NAME,
     FOOTER_IMAGE,
     get_shop_frames,
@@ -20,7 +19,6 @@ for shop in SHOPS:
     SHOPS[shop] = SHOPS[shop].strip()
 
 main_layout = [
-    [TITLE_BAR],
     [TOP_NAME],
 ]
 
@@ -31,6 +29,8 @@ main_layout += [FOOTER_IMAGE]
 file_path = {}
 
 window = get_window(main_layout)
+
+window.TKroot.wm_overrideredirect(False)
 
 
 def main() -> None:
