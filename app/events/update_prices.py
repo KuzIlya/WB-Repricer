@@ -1,9 +1,16 @@
 import requests
+import logging
 import PySimpleGUI as sg
 from openpyxl import load_workbook
 
 from app.interface.colors import WHITE_COLOR, BLACK_COLOR, BLUE_COLOR
 from app.events.utils import get_product_card
+
+logging.basicConfig(
+    filename='price_update.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 
 def update_prices(api_key, excel_path):
@@ -32,9 +39,10 @@ def update_prices(api_key, excel_path):
                 goods_data.append({"nmID": nmID, "price": price})
                 rows_to_delete.append(article)
             else:
-                print(f"Не удалось найти товар с артикулом {article}.")
+                logging.warning(f"Не удалось найти товар с артикулом {article}.")
 
     if not goods_data:
+        logging.info("Нет данных для обновления.")
         print("Нет данных для обновления.")
         return
 
@@ -58,6 +66,7 @@ def update_prices(api_key, excel_path):
                 and not response_data.get("error", True)
             ):
                 success_count += len(batch)
+                logging.info(f"Успешно обновлено {len(batch)} товаров.")
                 for item in batch:
                     for row in sheet.iter_rows(min_row=2, values_only=False):
                         if row[0].value == item["nmID"]:
@@ -65,18 +74,18 @@ def update_prices(api_key, excel_path):
                             break
             else:
                 failure_count += len(batch)
-                print(
-                    'Ошибка: '
-                    f"{response_data.get('errorText', 'Неизвестная ошибка')}"
+                error_text = response_data.get('errorText', 'Неизвестная ошибка')
+                logging.error(
+                    f"Ошибка при обновлении: {error_text} для {len(batch)} товаров."
                 )
     except Exception as e:
+        logging.exception(f"Произошла ошибка при выполнении запроса: {e}")
         print(f"Произошла ошибка при выполнении запроса: {e}")
         failure_count += len(goods_data)
 
     wb.save(excel_path)
 
     return (success_count, failure_count)
-
 
 def process_products_prices(event, file_path, shops: dict, window) -> None:
     shop_name = event.removeprefix('REFRESH')

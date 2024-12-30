@@ -1,9 +1,16 @@
 import requests
+import logging
 import PySimpleGUI as sg
 from openpyxl import load_workbook
 
 from app.events.utils import get_shop_warehouses, get_product_card
 from app.interface.colors import WHITE_COLOR, BLACK_COLOR, BLUE_COLOR
+
+logging.basicConfig(
+    filename='product_removal.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 
 def remove_product_rest(
@@ -31,7 +38,9 @@ def remove_product_rest(
         article = row[0]
         product_data = get_product_card(api_key, article)
         if not product_data['cards']:
+            logging.warning(f"Product with article {article} not found.")
             continue
+
         is_products = True
         skuses = [*map(lambda x: x['skus'], product_data['cards'][0]['sizes'])]
         nmID = product_data["cards"][0]["nmID"]
@@ -55,7 +64,14 @@ def remove_product_rest(
                     json=params,
                 )
 
-                if result.status_code not in (204, 404):
+                if result.status_code == 204:
+                    logging.info(f"Successfully deleted SKU {skus} from warehouse {id}.")
+                elif result.status_code == 404:
+                    logging.warning(f"SKU {skus} not found in warehouse {id}.")
+                else:
+                    logging.error(
+                        f"Failed to delete SKU {skus} from warehouse {id}. Status code: {result.status_code}"
+                    )
                     errors = True
                     error_message = 'Некоторые товары не были удалены.'
 
@@ -65,13 +81,19 @@ def remove_product_rest(
             json={'nmIDs': [nmID]}
         )
 
-        if result.status_code != 200:
+        if result.status_code == 200:
+            logging.info(f"Successfully moved product {nmID} to trash.")
+        else:
+            logging.error(
+                f"Failed to move product {nmID} to trash. Status code: {result.status_code}"
+            )
             errors = True
             error_message = 'Некоторые товары не удалось переместить в корзину'
 
     if not is_products:
         errors = True
         error_message = 'В текущих артикулах не найдены товары для удаления'
+        logging.warning(error_message)
 
     return errors, error_message
 
