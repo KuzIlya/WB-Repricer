@@ -1,5 +1,0 @@
-LIGHT_BLUE_COLOR = '#1eb0ff'
-BLUE_COLOR = '#3b68ff'
-WHITE_COLOR = 'white'
-BLACK_COLOR = 'black'
-BUTTON_COLOR = 'black on white'

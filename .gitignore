@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+*.egg
+*.manifest
+*.spec
+*.toc
+
+# venv
+venv/
+.env/
+.venv/
+env/
+
+# Build
+build/
+dist/
+*.egg-info
+*.whl
+
+# Logs and temp files
+*.log
+*.tmp
+*.bak
+*.swp
+*.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.iml
