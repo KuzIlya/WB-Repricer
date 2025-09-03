@@ -1,13 +1,20 @@
 import os
 from pathlib import Path
 
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QFrame, QMessageBox
+from PyQt6.QtWidgets import (
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QFrame,
+    QMessageBox
+)
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap
 from loguru import logger
 
 from app.config import SHOPS
-from app.services.product_manager import remove_product_rest
+from app.services.product_manager import change_product_rest
 from app.services.price_updater import update_prices
 from app.ui.shops_block import ShopBlock
 
@@ -33,8 +40,12 @@ class MainWindow(QWidget):
             self.shop_blocks[shop] = shop_block
             self.main_layout.addWidget(shop_block)
 
-            shop_block.btn_update.clicked.connect(lambda checked, s=shop: self.process_prices(s))
-            shop_block.btn_delete.clicked.connect(lambda checked, s=shop: self.process_deletion(s))
+            shop_block.btn_update.clicked.connect(
+                lambda checked, s=shop: self.process_prices(s)
+            )
+            shop_block.btn_change.clicked.connect(
+                lambda checked, s=shop: self.process_change(s)
+            )
 
         self.add_logo()
 
@@ -63,7 +74,9 @@ class MainWindow(QWidget):
         logo_label = QLabel()
         logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        logo_path = str(Path(__file__).parent.parent / 'images' / 'markines_image.png')
+        logo_path = str(
+            Path(__file__).parent.parent / 'images' / 'markines_image.png'
+        )
 
         if os.path.exists(logo_path):
             pixmap = QPixmap(logo_path)
@@ -84,37 +97,47 @@ class MainWindow(QWidget):
         path = shop_block.selected_path
         
         if not path:
-            QMessageBox.information(self, "Ошибка", f"Файл для магазина '{shop}' не выбран.")
+            QMessageBox.information(
+                self,
+                "Ошибка", f"Файл для магазина '{shop}' не выбран."
+            )
             return
 
         api_key = SHOPS[shop]
         result = update_prices(api_key, path)
         
         if result:
-            QMessageBox.information(self, "Обновление цен", f"Успешно: {result[0]}, Ошибок: {result[1]}")
+            QMessageBox.information(
+                self,
+                "Обновление цен", f"Успешно: {result[0]}, Ошибок: {result[1]}"
+            )
         else:
             QMessageBox.information(self, "Обновление цен", "Нет данных.")
 
         shop_block.btn_update.setDisabled(True)
-        shop_block.btn_delete.setDisabled(True)
+        shop_block.btn_change.setDisabled(True)
 
-    def process_deletion(self, shop: str) -> None:
+    def process_change(self, shop: str) -> None:
 
         shop_block = self.shop_blocks[shop]
         path = shop_block.selected_path
-        
+
         if not path:
-            QMessageBox.information(self, "Ошибка", f"Файл для магазина '{shop}' не выбран.")
+            QMessageBox.information(
+                self,
+                "Ошибка",
+                f"Файл для магазина '{shop}' не выбран."
+            )
             return
 
         api_key = SHOPS[shop]
-        _, message = remove_product_rest(api_key, path)
-        
+        _, message = change_product_rest(api_key, path)
+
         QMessageBox.information(
             self,
-            "Удаление товаров", 
+            "Изменение остатков товаров",
             message if message else "Все прошло успешно."
         )
 
         shop_block.btn_update.setDisabled(True)
-        shop_block.btn_delete.setDisabled(True)
+        shop_block.btn_change.setDisabled(True)

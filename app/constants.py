@@ -4,3 +4,6 @@ PRODUCT_STOCKS_API_URL = 'https://marketplace-api.wildberries.ru/api/v3/stocks/{
 PRODUCT_PRICES_API_URL = 'https://discounts-prices-api.wildberries.ru/api/v2/upload/task'
 
 UPDATE_ENDPOINT_TIME_RESTRICTION = 7
+
+UPDATE_AND_DELETE_REST_REQUEST_LIMIT = 20
+UPDATE_AND_DELETE_REST_REQUEST_WINDOW_SECONDS = 4

@@ -21,19 +21,18 @@ class ShopBlock(QFrame):
         self.__create_file_label()
         self.__create_file_button()
         self.__create_update_button()
-        self.__create_delete_button()
+        self.__create_change_button()
 
         layout.addWidget(self.shop_label)
         layout.addWidget(self.btn_file)
         layout.addWidget(self.file_label)
         layout.addStretch()
         layout.addWidget(self.btn_update)
-        layout.addWidget(self.btn_delete)
+        layout.addWidget(self.btn_change)
 
         self.setLayout(layout)
 
         QMetaObject.connectSlotsByName(self)
-
 
     def __create_shop_label(self, layout: QHBoxLayout) -> None:
         self.shop_label = QLabel(self.shop_name)
@@ -56,11 +55,11 @@ class ShopBlock(QFrame):
         self.btn_update.setEnabled(False)
         self.__set_button_style(self.btn_update)
 
-    def __create_delete_button(self) -> None:
-        self.btn_delete = QPushButton("Удалить остатки")
-        self.btn_delete.setObjectName("btn_delete")
-        self.btn_delete.setEnabled(False)
-        self.__set_button_style(self.btn_delete)
+    def __create_change_button(self) -> None:
+        self.btn_change = QPushButton("Изменить остатки")
+        self.btn_change.setObjectName("btn_change")
+        self.btn_change.setEnabled(False)
+        self.__set_button_style(self.btn_change)
 
     def __set_button_style(self, button: QPushButton) -> None:
         button.setStyleSheet("""
@@ -95,13 +94,13 @@ class ShopBlock(QFrame):
                 self.file_label.setText(f"{file_name} - {num_columns} {'колонка' if num_columns == 1 else 'колонки'}")
 
                 if num_columns == 1:
-                    self.btn_delete.setEnabled(True)
+                    self.btn_change.setEnabled(True)
                     self.btn_update.setEnabled(False)
                 elif num_columns == 2:
                     self.btn_update.setEnabled(True)
-                    self.btn_delete.setEnabled(False)
+                    self.btn_change.setEnabled(True)
                 else:
-                    self.btn_delete.setEnabled(False)
+                    self.btn_change.setEnabled(False)
                     self.btn_update.setEnabled(False)
                     QMessageBox.critical(None, "Ошибка", "Формат Excel-файла не поддерживается.")
             except Exception as e:
